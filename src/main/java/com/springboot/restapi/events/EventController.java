@@ -28,6 +28,7 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity createEvent(@RequestBody EventDto eventDto) {
+        // dto -> domain
         Event event = modelMapper.map(eventDto, Event.class);
 
         Event newEvent = this.eventRepository.save(event);
