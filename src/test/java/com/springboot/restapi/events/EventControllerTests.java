@@ -2,21 +2,16 @@ package com.springboot.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.restapi.common.TestDescription;
-import net.bytebuddy.asm.Advice;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 
 import java.time.LocalDateTime;
 
@@ -109,8 +104,8 @@ public class EventControllerTests {
     }
 
     @Test
-    @TestDescription("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
-    //@DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트") jUnit5 annotation
+    //@TestDescription("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트") // jUnit5 annotation
     public void createEvent_Bad_Request_Empty_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
@@ -129,6 +124,10 @@ public class EventControllerTests {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(this.objectMapper.writeValueAsString(eventDto))
                 )
-                .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].objectName").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].code").exists());
     }
 }
