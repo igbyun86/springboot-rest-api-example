@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.restapi.common.TestDescription;
 import net.bytebuddy.asm.Advice;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,7 @@ public class EventControllerTests {
 
     @Test
     @TestDescription("입력 값이 잘못된 경우에 에러가 발생하는 테스트")
+    //@DisplayName("입력 값이 잘못된 경우에 에러가 발생하는 테스트") jUnit5 annotation
     public void createEvent_Bad_Request_Empty_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
