@@ -1,5 +1,6 @@
 package com.springboot.restapi.events;
 
+import com.springboot.restapi.accounts.Account;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,9 @@ public class Event {
 
     @Enumerated(EnumType.STRING)
     private EventStatus eventStatus = EventStatus.DRAFT;
+
+    @ManyToOne
+    private Account manager;
 
     // update
     public void update() {
