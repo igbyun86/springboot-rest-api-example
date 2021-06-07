@@ -25,6 +25,7 @@ public class AuthServerConfigTest extends BaseControllerTest {
     @Test
     @DisplayName("인증 토큰을 발급 받는 테스트")
     public void getAuthToken() throws Exception {
+        //Given
         String username = "igbyun@email.com";
         String password = "ig123";
 
