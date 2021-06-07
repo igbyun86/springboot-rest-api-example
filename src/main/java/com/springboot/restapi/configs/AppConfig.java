@@ -1,8 +1,10 @@
 package com.springboot.restapi.configs;
 
 import com.springboot.restapi.accounts.Account;
+import com.springboot.restapi.accounts.AccountRepository;
 import com.springboot.restapi.accounts.AccountRole;
 import com.springboot.restapi.accounts.AccountService;
+import com.springboot.restapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -35,18 +37,31 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Set<AccountRole> hs = new HashSet();
-                hs.add(AccountRole.ADMIN);
-                hs.add(AccountRole.USER);
-                Account account = Account.builder()
-                        .email("ingil@email.com")
-                        .password("ig123")
-                        .roles(hs)
+
+                Set<AccountRole> hsAdmin = new HashSet();
+                hsAdmin.add(AccountRole.ADMIN);
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
+                        .roles(hsAdmin)
                         .build();
 
-                accountService.saveAccount(account);
+                accountService.saveAccount(admin);
+
+                Set<AccountRole> hsUser = new HashSet();
+                hsUser.add(AccountRole.USER);
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(hsUser)
+                        .build();
+
+                accountService.saveAccount(user);
             }
         };
     }

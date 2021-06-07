@@ -4,6 +4,7 @@ import com.springboot.restapi.accounts.Account;
 import com.springboot.restapi.accounts.AccountRepository;
 import com.springboot.restapi.accounts.AccountRole;
 import com.springboot.restapi.accounts.AccountService;
+import com.springboot.restapi.common.AppProperties;
 import com.springboot.restapi.common.BaseControllerTest;
 import com.springboot.restapi.common.TestDescription;
 import org.aspectj.lang.annotation.Before;
@@ -45,8 +46,12 @@ public class EventControllerTests extends BaseControllerTest {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    AppProperties appProperties;
+
     @BeforeEach
     public void setUp() {
+        // 저장된 데이터 초기화
         this.eventRepository.deleteAll();
         this.accountRepository.deleteAll();
     }
@@ -144,28 +149,22 @@ public class EventControllerTests extends BaseControllerTest {
      * @throws Exception
      */
     private String getAccessToken() throws Exception {
-        String username = "igbyun@email.com";
-        String password = "ig123";
-
         Set<AccountRole> hs = new HashSet();
         hs.add(AccountRole.ADMIN);
         hs.add(AccountRole.USER);
 
         Account account = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(hs)
                 .build();
 
         this.accountService.saveAccount(account);
 
-        String clientId = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
-                .param("username", username)
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         String response = perform.andReturn().getResponse().getContentAsString();
